@@ -1,4 +1,4 @@
-# General Purpose Agent 🤖
+# General Purpose Agent 🤖 (A personal attempt to build an internal application framework for Core-AI development.)
 
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -16,6 +16,9 @@ A sophisticated AI agent system inspired by Claude Code, featuring **Planning**,
 - 📊 **Comprehensive Evaluation** - Multi-level quality assessment and learning
 - 🔧 **Extensible Tools** - Easy-to-use framework for custom tool creation
 - 💾 **Memory System** - Context management and long-term learning
+- 🤝 **Multi-Agent Collaboration** - Specialized agents working together for complex tasks
+- 📡 **Streaming Responses** - Real-time progress updates with Server-Sent Events
+- 🌐 **Web UI Dashboard** - Interactive interface for task execution and monitoring
 
 ## 🛠️ Built-in Tools
 
@@ -62,7 +65,10 @@ A sophisticated AI agent system inspired by Claude Code, featuring **Planning**,
 - 📘 **[Getting Started](docs/GETTING_STARTED.md)** - Setup and first steps
 - 🏗️ **[Architecture](docs/ARCHITECTURE.md)** - System design and components
 - 📚 **[Usage Guide](docs/USAGE_GUIDE.md)** - Patterns and best practices
-- 💡 **[Examples](examples/example_usage.py)** - Code examples
+- 💡 **[Basic Examples](examples/example_usage.py)** - Core usage examples
+- 🤝 **[Multi-Agent Examples](examples/multi_agent_example.py)** - Collaboration examples
+- 📡 **[Streaming Examples](examples/streaming_example.py)** - Real-time streaming
+- 🌐 **[Web UI Guide](examples/web_ui_example.py)** - Dashboard usage
 
 ## 🚀 Quick Start
 
@@ -185,6 +191,76 @@ agent = GeneralPurposeAgent()
 agent.register_tool(MyCustomTool())
 ```
 
+### Multi-Agent Collaboration
+
+```python
+from src.collaboration import AgentOrchestrator, PlannerAgent, ExecutorAgent, ReviewerAgent, AgentRole
+from src.planning import PlanningModule
+from src.execution import ExecutionEngine
+from src.evaluation import EvaluationModule
+from src.utils.llm_client import AzureOpenAIClient
+from src.tools.base import ToolRegistry
+
+# Create components
+llm_client = AzureOpenAIClient()
+tool_registry = ToolRegistry()
+
+# Create orchestrator
+orchestrator = AgentOrchestrator(verbose=True)
+
+# Create and register specialized agents
+orchestrator.register_agent('planner', PlannerAgent(PlanningModule(llm_client)), AgentRole.PLANNER)
+orchestrator.register_agent('executor', ExecutorAgent(ExecutionEngine(llm_client, tool_registry)), AgentRole.EXECUTOR)
+orchestrator.register_agent('reviewer', ReviewerAgent(EvaluationModule(llm_client)), AgentRole.REVIEWER)
+
+# Run collaboration
+goal = "Create a data analysis script with visualizations"
+result = orchestrator.collaborate(goal)
+```
+
+### Streaming Responses
+
+```python
+from src.streaming import StreamHandler, StreamEventType
+
+# Create stream handler
+stream_handler = StreamHandler()
+
+# Subscribe to events
+def on_event(event):
+    print(f"[{event.type.value}] {event.data}")
+
+stream_handler.subscribe(on_event)
+
+# Execute with streaming
+stream_handler.emit_start("Calculate statistics")
+stream_handler.emit_planning("Breaking down task...")
+stream_handler.emit_execution("Running calculations...")
+stream_handler.emit_complete({"result": "Done", "success": True})
+
+# Get event history
+for event in stream_handler.get_history():
+    print(event.to_json())
+```
+
+### Web UI Dashboard
+
+```bash
+# Start the web server
+python -m uvicorn src.web_ui.app:app --host 0.0.0.0 --port 8000
+
+# Or use the example script
+python examples/web_ui_example.py
+```
+
+Access the dashboard at: [http://localhost:8000](http://localhost:8000)
+
+**Available Endpoints:**
+- `POST /api/run` - Execute task
+- `GET /api/stream/{goal}` - Stream execution with SSE
+- `GET /api/collaboration/run` - Multi-agent collaboration
+- `WS /ws` - WebSocket for real-time updates
+
 ## ⚙️ Configuration
 
 Customize agent behavior via YAML configuration:
@@ -237,6 +313,15 @@ agent-test/
 │   ├── execution.py       # Execution engine
 │   ├── evaluation.py      # Evaluation module
 │   ├── memory.py          # Memory management
+│   ├── collaboration/     # Multi-agent system
+│   │   ├── orchestrator.py
+│   │   └── specialized_agents.py
+│   ├── streaming/         # Streaming responses
+│   │   └── stream_handler.py
+│   ├── web_ui/            # Web dashboard
+│   │   ├── app.py
+│   │   ├── templates/
+│   │   └── static/
 │   ├── tools/             # Tool system
 │   │   ├── base.py
 │   │   ├── file_ops.py
@@ -250,6 +335,10 @@ agent-test/
 │   ├── ARCHITECTURE.md
 │   └── USAGE_GUIDE.md
 ├── examples/              # Usage examples
+│   ├── example_usage.py
+│   ├── multi_agent_example.py
+│   ├── streaming_example.py
+│   └── web_ui_example.py
 ├── tests/                 # Unit tests
 ├── config.yaml           # Configuration
 └── requirements.txt      # Dependencies
@@ -263,13 +352,13 @@ agent-test/
 
 ## 🚧 Roadmap
 
+- [x] **Multi-agent collaboration** - ✅ Completed
+- [x] **Streaming responses** - ✅ Completed
+- [x] **Web UI dashboard** - ✅ Completed
 - [ ] Support for multiple LLM providers (OpenAI, Anthropic, local models)
 - [ ] Asynchronous tool execution
 - [ ] Vector-based memory with semantic search
-- [ ] Multi-agent collaboration
-- [ ] Web UI dashboard
 - [ ] Tool marketplace
-- [ ] Streaming responses
 - [ ] Advanced context management
 
 ## 🤝 Contributing

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Agent Dashboard</h1>
+            <p class="subtitle">General-Purpose AI Agent with Planning, Thinking, and Evaluation</p>
+        </header>
+
+        <main>
+            <!-- Task Input Section -->
+            <section class="task-input">
+                <h2>New Task</h2>
+                <div class="input-group">
+                    <textarea id="goalInput" placeholder="Enter your task goal here... e.g., 'Create a Python function to calculate factorial'"></textarea>
+                    <div class="button-group">
+                        <button id="runButton" class="primary-button">Run Task</button>
+                        <button id="streamButton" class="secondary-button">Run with Streaming</button>
+                        <button id="collaborateButton" class="tertiary-button">Multi-Agent Collaboration</button>
+                    </div>
+                </div>
+                <div class="options">
+                    <label>
+                        <input type="checkbox" id="verboseMode">
+                        Verbose Mode
+                    </label>
+                </div>
+            </section>
+
+            <!-- Status Section -->
+            <section class="status-section" id="statusSection" style="display: none;">
+                <h2>Execution Status</h2>
+                <div class="status-content">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="status-message" id="statusMessage">Initializing...</p>
+                </div>
+            </section>
+
+            <!-- Live Stream Section -->
+            <section class="stream-section" id="streamSection" style="display: none;">
+                <h2>Live Execution Stream</h2>
+                <div class="stream-content" id="streamContent"></div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>Results</h2>
+                <div class="results-content" id="resultsContent"></div>
+            </section>
+
+            <!-- Multi-Agent Collaboration Section -->
+            <section class="collaboration-section" id="collaborationSection" style="display: none;">
+                <h2>Multi-Agent Collaboration</h2>
+                <div class="collaboration-content">
+                    <div class="agent-status">
+                        <div class="agent-card" id="plannerAgent">
+                            <h3>🎯 Planner Agent</h3>
+                            <p class="agent-status-text">Idle</p>
+                        </div>
+                        <div class="agent-card" id="executorAgent">
+                            <h3>⚙️ Executor Agent</h3>
+                            <p class="agent-status-text">Idle</p>
+                        </div>
+                        <div class="agent-card" id="reviewerAgent">
+                            <h3>✅ Reviewer Agent</h3>
+                            <p class="agent-status-text">Idle</p>
+                        </div>
+                    </div>
+                    <div class="collaboration-log" id="collaborationLog"></div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section class="error-section" id="errorSection" style="display: none;">
+                <h2>Error</h2>
+                <div class="error-content" id="errorContent"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by Azure OpenAI GPT-4 | <a href="https://github.com/yourusername/agent-test" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
