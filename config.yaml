@@ -1,0 +1,23 @@
+# Agent Configuration
+agent:
+  name: "GeneralPurposeAgent"
+  max_iterations: 10
+  thinking_enabled: true
+  verbose: true
+
+# LLM Configuration
+llm:
+  temperature: 0.7
+  max_tokens: 4096
+  top_p: 0.95
+
+# Planning Configuration
+planning:
+  max_subtasks: 20
+  allow_replanning: true
+
+# Evaluation Configuration
+evaluation:
+  step_evaluation: true
+  final_evaluation: true
+  success_threshold: 0.7
