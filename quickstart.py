@@ -76,8 +76,9 @@ try:
     print("\n🎉 Quick start completed!")
     print("\n💡 Next steps:")
     print("   1. Check out examples/example_usage.py for more examples")
-    print("   2. Read README.md for detailed documentation")
-    print("   3. Try creating your own custom tools")
+    print("   2. Read docs/GETTING_STARTED.md for setup guide")
+    print("   3. Explore docs/USAGE_GUIDE.md for patterns")
+    print("   4. Try creating your own custom tools")
     print("\n" + "="*70)
 
 except Exception as e:
