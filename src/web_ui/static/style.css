@@ -56,6 +56,37 @@ header h1 {
     opacity: 0.9;
 }
 
+/* Configuration Banner Styles */
+.config-banner {
+    margin: 1rem 0 2rem 0;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+}
+
+.config-banner.demo-mode {
+    background-color: #fef3c7;
+    border-color: var(--warning-color);
+    color: #92400e;
+}
+
+.config-banner.configured {
+    background-color: #d1fae5;
+    border-color: var(--success-color);
+    color: #065f46;
+}
+
+.config-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.config-banner-content span:first-child {
+    font-size: 1.25rem;
+}
+
 /* Section Styles */
 section {
     background: var(--card-bg);

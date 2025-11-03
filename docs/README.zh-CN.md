@@ -1,15 +1,24 @@
-# 通用 AI Agent 🤖 （一次为 Core-AI 开发构建内部应用框架的个人尝试。）
+# 通用 AI Agent 框架 🤖
 
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](../LICENSE)
 [![Azure OpenAI](https://img.shields.io/badge/Azure-OpenAI-blue.svg)](https://azure.microsoft.com/zh-cn/products/ai-services/openai-service)
+[![Framework](https://img.shields.io/badge/type-framework-orange.svg)]()
 
 **语言:** [English](../README.md) | [中文](README.zh-CN.md)
 
-一个受 Claude Code 启发的智能 AI Agent 系统，具备**规划**、**思考**、**执行**和**评估**能力，可自主处理复杂任务。
+一个受 Claude Code 启发的**通用 AI Agent 框架**。为任何领域构建自定义 Agent，具备**规划**、**思考**、**执行**和**评估**能力。
+
+> **🎯 这是一个框架，不是特定的 Agent。** 您可以用它构建：
+> - 代码审查 Agent
+> - 数据分析 Agent
+> - 客户支持 Agent
+> - DevOps 自动化 Agent
+> - 或任何您需要的专业化 Agent！
 
 ## ✨ 核心特性
 
+- 🎯 **智能查询路由** - 智能分类查询，选择最优响应策略
 - 🧠 **智能规划** - 自动任务分解与依赖管理
 - 💭 **显式思考** - 透明的推理过程与反思能力
 - ⚡ **稳健执行** - 基于工具的任务执行，集成 Azure OpenAI GPT
@@ -62,13 +71,21 @@
 
 ## 📖 文档
 
+### 快速开始
 - 📘 **[入门指南](GETTING_STARTED.md)** - 设置与第一步
+- 💬 **[聊天指南](CHAT_GUIDE.md)** - 交互式聊天界面（CLI & Web）
+
+### 框架定制
+- 🎨 **[构建自定义 Agent](BUILDING_CUSTOM_AGENTS.md)** - 构建您自己的专业化 Agent
+- 🎯 **[查询路由](QUERY_ROUTING.md)** - 基于 LLM 的查询分类
 - 🏗️ **[架构文档](ARCHITECTURE.md)** - 系统设计与组件
+
+### 使用与示例
 - 📚 **[使用指南](USAGE_GUIDE.md)** - 模式与最佳实践
 - 💡 **[基础示例](../examples/example_usage.py)** - 核心使用示例
+- 🎨 **[自定义分类器示例](../examples/custom_classifier_example.py)** - 领域特定 Agent
 - 🤝 **[多 Agent 示例](../examples/multi_agent_example.py)** - 协作示例
 - 📡 **[流式响应示例](../examples/streaming_example.py)** - 实时流式处理
-- 🌐 **[Web UI 指南](../examples/web_ui_example.py)** - 仪表板使用
 
 ## 🚀 快速开始
 
@@ -82,15 +99,31 @@ cd agent-test
 # 2. 安装依赖
 pip install -r requirements.txt
 
-# 3. 配置 Azure OpenAI
+# 3. 配置 Azure OpenAI（演示模式可选）
 cp .env.example .env
 # 编辑 .env 文件，填入你的 Azure OpenAI 凭证
-
-# 4. 运行快速入门
-python quickstart.py
 ```
 
-### 基本用法
+### 💬 聊天界面（推荐）
+
+#### 终端聊天
+```bash
+python chat.py
+```
+
+#### Web 聊天
+```bash
+python start_server.py
+# 在浏览器中打开 http://localhost:8000
+```
+
+特性：
+- 🗨️ **对话式界面** 类似 Claude Code
+- 📊 **实时状态更新** 执行过程可视化
+- 📜 **消息历史** 保持上下文
+- ⚠️ **演示模式** 无需配置 Azure OpenAI 即可体验
+
+### 📝 编程式使用
 
 ```python
 from dotenv import load_dotenv

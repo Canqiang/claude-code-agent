@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Chat - Interactive AI Assistant</title>
+    <link rel="stylesheet" href="/static/chat.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="header-content">
+                <h1>🤖 Agent Chat</h1>
+                <p class="subtitle">Interactive AI Assistant with Planning & Evaluation</p>
+            </div>
+            <div class="header-actions">
+                <button id="clearBtn" class="action-btn" title="Clear chat">
+                    <span>🗑️</span>
+                </button>
+                <button id="settingsBtn" class="action-btn" title="Settings">
+                    <span>⚙️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Configuration Banner -->
+        <div id="configBanner" class="config-banner" style="display: none;">
+            <span id="configIcon">⚠️</span>
+            <span id="configMessage">Checking configuration...</span>
+        </div>
+
+        <!-- Chat Messages Area -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="welcome-icon">👋</div>
+                <h2>Welcome to Agent Chat!</h2>
+                <p>I'm an AI assistant powered by Azure OpenAI GPT-4.</p>
+                <p>I can help you with:</p>
+                <ul>
+                    <li>💡 Planning and executing complex tasks</li>
+                    <li>📝 Writing and analyzing code</li>
+                    <li>🔍 Researching and gathering information</li>
+                    <li>🤔 Problem-solving and decision making</li>
+                </ul>
+                <p class="welcome-prompt">What can I help you with today?</p>
+            </div>
+        </div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <span class="typing-text">Agent is thinking...</span>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-container">
+            <div class="input-wrapper">
+                <textarea
+                    id="messageInput"
+                    class="message-input"
+                    placeholder="Type your message here... (Shift+Enter for new line)"
+                    rows="1"
+                ></textarea>
+                <button id="sendBtn" class="send-btn" title="Send message (Enter)">
+                    <span class="send-icon">➤</span>
+                </button>
+            </div>
+            <div class="input-hints">
+                <span class="hint">💡 Tip: I can execute tasks, analyze code, and answer questions</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/chat.js"></script>
+</body>
+</html>

@@ -1,168 +1,244 @@
-"""Unit tests for the General Purpose Agent."""
-import unittest
-from unittest.mock import Mock, patch, MagicMock
+"""
+Test Agent using Azure OpenAI
+
+This test demonstrates using the General Purpose Agent framework with Azure OpenAI.
+"""
+
+import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.agent import GeneralPurposeAgent
-from src.tools.base import Tool, ToolParameter, ToolRegistry
-from src.planning import SubTask, Plan
-from src.evaluation import StepEvaluation, FinalEvaluation
+from src.utils.llm_client import AzureOpenAIClient
+from src.streaming import StreamHandler, StreamEvent
 
 
-class TestToolRegistry(unittest.TestCase):
-    """Test the ToolRegistry."""
+def test_simple_task():
+    """Test agent with a simple task."""
+    print("\n" + "=" * 70)
+    print("Test 1: Simple Task")
+    print("=" * 70)
 
-    def test_register_and_get_tool(self):
-        """Test registering and retrieving a tool."""
-        registry = ToolRegistry()
+    # Load environment variables
+    load_dotenv()
 
-        # Create a mock tool
-        mock_tool = Mock(spec=Tool)
-        mock_tool.name = "test_tool"
+    # Create agent with Azure OpenAI
+    agent = GeneralPurposeAgent(verbose=True)
 
-        registry.register(mock_tool)
+    # Test task
+    goal = "List the first 5 prime numbers"
 
-        retrieved_tool = registry.get("test_tool")
-        self.assertEqual(retrieved_tool, mock_tool)
+    print(f"\n📝 Goal: {goal}\n")
 
-    def test_get_nonexistent_tool(self):
-        """Test retrieving a nonexistent tool."""
-        registry = ToolRegistry()
-        tool = registry.get("nonexistent")
-        self.assertIsNone(tool)
+    # Execute task
+    evaluation = agent.run(goal)
 
+    # Print results
+    print("\n" + "=" * 70)
+    print("📊 Results")
+    print("=" * 70)
+    print(f"✅ Success: {evaluation.overall_success}")
+    print(f"📈 Score: {evaluation.overall_score:.2f}")
+    print(f"\n💬 Summary:\n{evaluation.summary}")
 
-class TestSubTask(unittest.TestCase):
-    """Test the SubTask model."""
+    if evaluation.strengths:
+        print(f"\n💪 Strengths:")
+        for strength in evaluation.strengths:
+            print(f"  • {strength}")
 
-    def test_subtask_creation(self):
-        """Test creating a subtask."""
-        subtask = SubTask(
-            id=1,
-            description="Test task",
-            reasoning="Test reasoning",
-            dependencies=[],
-            status="pending"
-        )
-
-        self.assertEqual(subtask.id, 1)
-        self.assertEqual(subtask.description, "Test task")
-        self.assertEqual(subtask.status, "pending")
+    if evaluation.weaknesses:
+        print(f"\n⚠️  Weaknesses:")
+        for weakness in evaluation.weaknesses:
+            print(f"  • {weakness}")
 
 
-class TestPlan(unittest.TestCase):
-    """Test the Plan model."""
+def test_complex_task():
+    """Test agent with a complex task."""
+    print("\n" + "=" * 70)
+    print("Test 2: Complex Task")
+    print("=" * 70)
 
-    def test_plan_creation(self):
-        """Test creating a plan."""
-        subtasks = [
-            SubTask(
-                id=1,
-                description="Task 1",
-                reasoning="Reason 1",
-                dependencies=[]
-            ),
-            SubTask(
-                id=2,
-                description="Task 2",
-                reasoning="Reason 2",
-                dependencies=[1]
-            )
-        ]
+    load_dotenv()
 
-        plan = Plan(
-            goal="Test goal",
-            subtasks=subtasks,
-            strategy="Test strategy",
-            created_at="2024-01-01T00:00:00"
-        )
+    agent = GeneralPurposeAgent(verbose=True)
 
-        self.assertEqual(plan.goal, "Test goal")
-        self.assertEqual(len(plan.subtasks), 2)
-        self.assertEqual(plan.strategy, "Test strategy")
+    goal = """Create a Python script that:
+1. Calculates the factorial of numbers from 1 to 10
+2. Saves the results to a file named 'factorials.txt'
+3. Each line should be in format: 'factorial(n) = result'
+"""
+
+    print(f"\n📝 Goal: {goal}\n")
+
+    evaluation = agent.run(goal)
+
+    print("\n" + "=" * 70)
+    print("📊 Results")
+    print("=" * 70)
+    print(f"✅ Success: {evaluation.overall_success}")
+    print(f"📈 Score: {evaluation.overall_score:.2f}")
 
 
-class TestStepEvaluation(unittest.TestCase):
-    """Test the StepEvaluation model."""
+def test_llm_client():
+    """Test Azure OpenAI client directly."""
+    print("\n" + "=" * 70)
+    print("Test 3: Azure OpenAI Client")
+    print("=" * 70)
 
-    def test_step_evaluation_creation(self):
-        """Test creating a step evaluation."""
-        evaluation = StepEvaluation(
-            step_id=1,
-            step_description="Test step",
-            success=True,
-            score=0.9,
-            reasoning="Good execution",
-            issues=[],
-            suggestions=[]
-        )
+    load_dotenv()
 
-        self.assertTrue(evaluation.success)
-        self.assertEqual(evaluation.score, 0.9)
+    # Test LLM client
+    client = AzureOpenAIClient()
 
+    print("\n🔧 Testing Azure OpenAI connection...")
 
-class TestFinalEvaluation(unittest.TestCase):
-    """Test the FinalEvaluation model."""
+    response = client.chat_completion(
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": "Say hello in one sentence."}
+        ],
+        temperature=0.7,
+        max_tokens=100
+    )
 
-    def test_final_evaluation_creation(self):
-        """Test creating a final evaluation."""
-        step_eval = StepEvaluation(
-            step_id=1,
-            step_description="Test step",
-            success=True,
-            score=1.0,
-            reasoning="Perfect",
-            issues=[],
-            suggestions=[]
-        )
-
-        final_eval = FinalEvaluation(
-            goal="Test goal",
-            overall_success=True,
-            overall_score=1.0,
-            step_evaluations=[step_eval],
-            summary="Test summary",
-            strengths=["Fast execution"],
-            weaknesses=[],
-            lessons_learned=["Testing is important"]
-        )
-
-        self.assertTrue(final_eval.overall_success)
-        self.assertEqual(final_eval.overall_score, 1.0)
-        self.assertEqual(len(final_eval.step_evaluations), 1)
+    print(f"\n✅ Response: {response['content']}")
+    print(f"📊 Tokens: {response.get('usage', {})}")
 
 
-class TestGeneralPurposeAgent(unittest.TestCase):
-    """Test the GeneralPurposeAgent."""
+def test_streaming():
+    """Test streaming with Azure OpenAI."""
+    print("\n" + "=" * 70)
+    print("Test 4: Streaming")
+    print("=" * 70)
 
-    @patch('src.agent.AzureOpenAIClient')
-    def test_agent_initialization(self, mock_llm_client):
-        """Test agent initialization."""
-        agent = GeneralPurposeAgent(verbose=False)
+    load_dotenv()
 
-        self.assertIsNotNone(agent.tool_registry)
-        self.assertIsNotNone(agent.planning_module)
-        self.assertIsNotNone(agent.thinking_module)
-        self.assertIsNotNone(agent.execution_engine)
-        self.assertIsNotNone(agent.evaluation_module)
+    stream_handler = StreamHandler()
 
-    @patch('src.agent.AzureOpenAIClient')
-    def test_register_custom_tool(self, mock_llm_client):
-        """Test registering a custom tool."""
-        agent = GeneralPurposeAgent(verbose=False)
+    # Subscribe to events
+    def on_event(event: StreamEvent):
+        print(f"[{event.type.value}] {event.data}")
 
-        mock_tool = Mock(spec=Tool)
-        mock_tool.name = "custom_tool"
+    stream_handler.subscribe(on_event)
 
-        agent.register_tool(mock_tool)
+    # Simulate agent workflow
+    print("\n🎬 Simulating agent workflow...\n")
 
-        retrieved_tool = agent.tool_registry.get("custom_tool")
-        self.assertEqual(retrieved_tool, mock_tool)
+    stream_handler.emit_start("Calculate fibonacci sequence")
+    stream_handler.emit_planning("Breaking down the task...")
+    stream_handler.emit_thinking("Deciding on algorithm...")
+    stream_handler.emit_execution("Calculating fibonacci...", 50)
+    stream_handler.emit_progress("Almost done...", 90)
+    stream_handler.emit_evaluation({"score": 0.95, "success": True})
+    stream_handler.emit_complete({
+        "success": True,
+        "score": 0.95,
+        "summary": "Successfully calculated fibonacci sequence"
+    })
+
+    print("\n✅ Streaming test completed")
+
+
+def test_interactive():
+    """Interactive test - chat with the agent."""
+    print("\n" + "=" * 70)
+    print("Test 5: Interactive Chat (Azure OpenAI)")
+    print("=" * 70)
+
+    load_dotenv()
+
+    agent = GeneralPurposeAgent(verbose=False)
+
+    print("\n💬 Interactive Mode (type 'exit' to quit)")
+    print("=" * 70 + "\n")
+
+    while True:
+        try:
+            user_input = input("You: ").strip()
+
+            if user_input.lower() in ['exit', 'quit', 'bye']:
+                print("\n👋 Goodbye!")
+                break
+
+            if not user_input:
+                continue
+
+            print(f"\n🤖 Agent: Processing...\n")
+
+            # Run agent
+            evaluation = agent.run(user_input)
+
+            # Print response
+            print(f"🤖 Agent: {evaluation.summary}")
+
+            if evaluation.overall_success:
+                print(f"\n✅ Task completed successfully (Score: {evaluation.overall_score:.2f})")
+            else:
+                print(f"\n⚠️  Task completed with issues (Score: {evaluation.overall_score:.2f})")
+
+            print()
+
+        except KeyboardInterrupt:
+            print("\n\n⚠️  Interrupted. Goodbye!")
+            break
+        except Exception as e:
+            print(f"\n❌ Error: {e}\n")
 
 
 if __name__ == "__main__":
-    unittest.main()
+    try:
+        # Check Azure OpenAI configuration
+        load_dotenv()
+
+        required_vars = [
+            'AZURE_OPENAI_API_KEY',
+            'AZURE_OPENAI_ENDPOINT',
+            'AZURE_OPENAI_DEPLOYMENT_NAME'
+        ]
+
+        missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+        if missing_vars:
+            print("\n⚠️  Warning: Missing Azure OpenAI configuration")
+            print("Missing environment variables:")
+            for var in missing_vars:
+                print(f"  - {var}")
+            print("\nPlease configure .env file before running tests.")
+            print("See .env.example for reference.")
+            sys.exit(1)
+
+        print("\n" + "=" * 70)
+        print("🚀 Azure OpenAI Agent Tests")
+        print("=" * 70)
+        print("\nConfiguration:")
+        print(f"  • Endpoint: {os.getenv('AZURE_OPENAI_ENDPOINT')}")
+        print(f"  • Deployment: {os.getenv('AZURE_OPENAI_DEPLOYMENT_NAME')}")
+        print(f"  • API Version: {os.getenv('AZURE_OPENAI_API_VERSION', '2024-02-15-preview')}")
+        print("=" * 70)
+
+        # Run tests
+        test_llm_client()
+        test_simple_task()
+        test_complex_task()
+        test_streaming()
+
+        # Optional: Interactive mode
+        print("\n" + "=" * 70)
+        interactive = input("\n🤔 Run interactive mode? (y/n): ").strip().lower()
+
+        if interactive == 'y':
+            test_interactive()
+
+        print("\n" + "=" * 70)
+        print("✅ All tests completed!")
+        print("=" * 70)
+
+    except Exception as e:
+        print(f"\n❌ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

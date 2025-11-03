@@ -1,15 +1,24 @@
-# General Purpose Agent 🤖 (A personal attempt to build an internal application framework for Core-AI development.)
+# General Purpose Agent Framework 🤖
 
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Azure OpenAI](https://img.shields.io/badge/Azure-OpenAI-blue.svg)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![Framework](https://img.shields.io/badge/type-framework-orange.svg)]()
 
 **Language:** [English](README.md) | [中文](docs/README.zh-CN.md)
 
-A sophisticated AI agent system inspired by Claude Code, featuring **Planning**, **Thinking**, **Execution**, and **Evaluation** capabilities for handling complex tasks autonomously.
+A **general-purpose AI agent framework** inspired by Claude Code. Build custom agents for any domain with **Planning**, **Thinking**, **Execution**, and **Evaluation** capabilities.
+
+> **🎯 This is a framework, not a specific agent.** Customize it to build:
+> - Code review agents
+> - Data analysis agents
+> - Customer support agents
+> - DevOps automation agents
+> - Or any specialized agent you need!
 
 ## ✨ Key Features
 
+- 🎯 **Intelligent Query Routing** - Smart classification of queries for optimal response strategy
 - 🧠 **Intelligent Planning** - Automatic task decomposition with dependency management
 - 💭 **Explicit Thinking** - Transparent reasoning process with reflection capabilities
 - ⚡ **Robust Execution** - Tool-based task execution with Azure OpenAI GPT
@@ -62,13 +71,21 @@ A sophisticated AI agent system inspired by Claude Code, featuring **Planning**,
 
 ## 📖 Documentation
 
+### Getting Started
 - 📘 **[Getting Started](docs/GETTING_STARTED.md)** - Setup and first steps
+- 💬 **[Chat Guide](docs/CHAT_GUIDE.md)** - Interactive chat interfaces (CLI & Web)
+
+### Framework Customization
+- 🎨 **[Building Custom Agents](docs/BUILDING_CUSTOM_AGENTS.md)** - Build your own specialized agents
+- 🎯 **[Query Routing](docs/QUERY_ROUTING.md)** - LLM-based query classification
 - 🏗️ **[Architecture](docs/ARCHITECTURE.md)** - System design and components
+
+### Usage & Examples
 - 📚 **[Usage Guide](docs/USAGE_GUIDE.md)** - Patterns and best practices
 - 💡 **[Basic Examples](examples/example_usage.py)** - Core usage examples
+- 🎨 **[Custom Classifier Examples](examples/custom_classifier_example.py)** - Domain-specific agents
 - 🤝 **[Multi-Agent Examples](examples/multi_agent_example.py)** - Collaboration examples
 - 📡 **[Streaming Examples](examples/streaming_example.py)** - Real-time streaming
-- 🌐 **[Web UI Guide](examples/web_ui_example.py)** - Dashboard usage
 
 ## 🚀 Quick Start
 
@@ -82,15 +99,31 @@ cd agent-test
 # 2. Install dependencies
 pip install -r requirements.txt
 
-# 3. Configure Azure OpenAI
+# 3. Configure Azure OpenAI (optional for demo mode)
 cp .env.example .env
 # Edit .env with your Azure OpenAI credentials
-
-# 4. Run quick start
-python quickstart.py
 ```
 
-### Basic Usage
+### 💬 Chat Interfaces (Recommended)
+
+#### Terminal Chat
+```bash
+python chat.py
+```
+
+#### Web Chat
+```bash
+python start_server.py
+# Open http://localhost:8000 in your browser
+```
+
+Features:
+- 🗨️ **Conversational interface** like Claude Code
+- 📊 **Real-time status updates** during execution
+- 📜 **Message history** for context
+- ⚠️ **Demo mode** works without Azure OpenAI configuration
+
+### 📝 Programmatic Usage
 
 ```python
 from dotenv import load_dotenv

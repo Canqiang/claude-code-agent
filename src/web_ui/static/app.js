@@ -4,8 +4,10 @@ class AgentDashboard {
     constructor() {
         this.ws = null;
         this.eventSource = null;
+        this.isConfigured = false;
         this.initializeElements();
         this.attachEventListeners();
+        this.checkConfiguration();
     }
 
     initializeElements() {
@@ -39,12 +41,45 @@ class AgentDashboard {
         // Error elements
         this.errorSection = document.getElementById('errorSection');
         this.errorContent = document.getElementById('errorContent');
+
+        // Config banner elements
+        this.configBanner = document.getElementById('configBanner');
+        this.configIcon = document.getElementById('configIcon');
+        this.configMessage = document.getElementById('configMessage');
     }
 
     attachEventListeners() {
         this.runButton.addEventListener('click', () => this.runTask());
         this.streamButton.addEventListener('click', () => this.streamTask());
         this.collaborateButton.addEventListener('click', () => this.collaborateTask());
+    }
+
+    async checkConfiguration() {
+        try {
+            const response = await fetch('/health');
+            const data = await response.json();
+
+            this.isConfigured = data.configured;
+
+            // Show configuration banner
+            this.configBanner.style.display = 'block';
+
+            if (data.configured) {
+                this.configBanner.className = 'config-banner configured';
+                this.configIcon.textContent = '✅';
+                this.configMessage.textContent = 'Azure OpenAI configured - Full functionality enabled';
+            } else {
+                this.configBanner.className = 'config-banner demo-mode';
+                this.configIcon.textContent = '⚠️';
+                this.configMessage.textContent = 'Demo Mode - Azure OpenAI not configured. Configure .env file to enable real agent functionality.';
+            }
+        } catch (error) {
+            console.error('Configuration check failed:', error);
+            this.configBanner.style.display = 'block';
+            this.configBanner.className = 'config-banner demo-mode';
+            this.configIcon.textContent = '❌';
+            this.configMessage.textContent = 'Error checking configuration. Server may not be running.';
+        }
     }
 
     hideAllSections() {
@@ -332,6 +367,14 @@ class AgentDashboard {
         this.resultsSection.style.display = 'block';
 
         let html = '';
+
+        // Demo mode indicator
+        if (data.demo_mode) {
+            html += `<div class="result-item" style="background-color: #fef3c7; border-left-color: #f59e0b;">`;
+            html += `<div class="result-label">⚠️ Demo Mode</div>`;
+            html += `<div class="result-value">This is a simulated response. Configure Azure OpenAI in .env file for real functionality.</div>`;
+            html += `</div>`;
+        }
 
         // Success status
         html += `<div class="result-item ${data.success ? '' : 'failed'}">`;
